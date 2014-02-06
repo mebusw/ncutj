@@ -24,6 +24,7 @@ class wechatCallbackapiTest
         }
 
         echo $this->checkSignature();
+
         $this->responseMsg();
         exit;
 
@@ -66,10 +67,11 @@ class wechatCallbackapiTest
                             $contentStr = "请留下你微信号。";
                             break;
                         default:
-                            $contentStr = "回复1，获取最新活动安排。\n回复2，申请加入微信大群。";
+                            $contentStr = "回复数字:\n1.获取最新活动安排。\n2.申请加入微信大群。\n";
                             break;
                     }
                     break;
+
                 default:
                     break;
             } 
