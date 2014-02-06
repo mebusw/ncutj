@@ -37,40 +37,56 @@ class wechatCallbackapiTest
       	//extract post data
 		if (!empty($postStr)){
                 
-              	$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-                $fromUsername = $postObj->FromUserName;
-                $toUsername = $postObj->ToUserName;
-                $keyword = trim($postObj->Content);
-                $msgType = trim($postObj->MsgType);
-                $event = trim($postObj->Event);
-                $time = time();
-                $textTpl = "<xml>
-							<ToUserName><![CDATA[%s]]></ToUserName>
-							<FromUserName><![CDATA[%s]]></FromUserName>
-							<CreateTime>%s</CreateTime>
-							<MsgType><![CDATA[%s]]></MsgType>
-							<Content><![CDATA[%s]]></Content>
-							<FuncFlag>0</FuncFlag>
-                            <Event><![CDATA[%s]]></Event>
-							</xml>";    
+          	$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $fromUsername = $postObj->FromUserName;
+            $toUsername = $postObj->ToUserName;
+            $keyword = trim($postObj->Content);
+            $msgType = trim($postObj->MsgType);
+            $event = trim($postObj->Event);
+            $time = time();
 
-                switch ($msgType) {
-                    case "event":
-                     # code...
-                     break;
-                    case "text":
-                        break;
-                    default:
-                     # code...
-                     break;
-                 }                                     
+            switch ($msgType) {
+                case "event":
+                    switch ($event) {
+                        case 'subscribe':
+                            $contentStr = "欢迎关注中央大学天津校友会。";
+                            break;
+                        case 'unsubscribe':
+                            $contentStr = "谢谢光临。";
+                            break;
+                    }                        
+                    break;
 
+                case "text":
+                    switch ($keyword) {
+                        case '1':
+                            $contentStr = "最近尚未安排活动，敬请期待。";
+                            break;
+                        case '2':
+                            $contentStr = "请留下你微信号。";
+                            break;
+                        default:
+                            $contentStr = "回复1，获取最新活动安排。\n回复2，申请加入微信大群。";
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            } 
 
-            	$contentStr = "Welcome to wechat world!";
-            	$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr, $event);
-            	echo $resultStr;
+            $textTpl = "<xml>
+                <ToUserName><![CDATA[%s]]></ToUserName>
+                <FromUserName><![CDATA[%s]]></FromUserName>
+                <CreateTime>%s</CreateTime>
+                <MsgType><![CDATA[%s]]></MsgType>
+                <Content><![CDATA[%s]]></Content>
+                <FuncFlag>0</FuncFlag>
+                <Event><![CDATA[%s]]></Event>
+                </xml>";
+            $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr, $event);
+            echo $resultStr;
 
-        }else {
+        } else {
         	echo "No POST raw data.";
         	exit;
         }
