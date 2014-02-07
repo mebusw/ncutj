@@ -39,12 +39,12 @@ class wechatCallbackapiTest
 		if (!empty($postStr)){
                 
           	$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $fromUsername = $postObj->FromUserName;
-            $toUsername = $postObj->ToUserName;
-            $keyword = trim($postObj->Content);
-            $msgType = trim($postObj->MsgType);
-            $event = trim($postObj->Event);
-            $time = time();
+                $fromUsername = htmlspecialchars($postObj->FromUserName);
+                $toUsername =  htmlspecialchars($postObj->ToUserName);
+                $keyword =  htmlspecialchars(trim($postObj->Content));
+                $msgType =  htmlspecialchars(trim($postObj->MsgType));
+                $event =  htmlspecialchars(trim($postObj->Event));
+                $time = time();
 
             switch ($msgType) {
                 case "event":
@@ -96,13 +96,13 @@ class wechatCallbackapiTest
 		
 	private function checkSignature()
 	{
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];	
+        $signature = htmlspecialchars($_GET['signature']);
+        $timestamp = htmlspecialchars($_GET['timestamp']);
+        $nonce = htmlspecialchars($_GET['nonce']);	
         		
 		$token = TOKEN;
 
-        echo "=".$signature.$timestamp.$nonce.$token."=";
+        echo '=' . $signature . $timestamp . $nonce . $token . '=';
 
 		$tmpArr = array($token, $timestamp, $nonce);
 		sort($tmpArr);
